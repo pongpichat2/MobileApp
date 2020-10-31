@@ -1,8 +1,9 @@
+import 'package:Login_test/template/dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:Login_test/template/Home_page.dart';
-import 'package:Login_test/template/signup_page.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 // class Login extends StatefulWidget {
 //   @override
@@ -23,227 +24,137 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final formkey = GlobalKey<FormState>();
-
-  String _email, _password;
+  final db = FirebaseDatabase.instance.reference();
+  String _username, _password;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Form(
-        key: formkey,
-        child: Container(
-          padding: EdgeInsets.only(left: 16, right: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Text(
-                    "Welcome,",
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 6,
-                  ),
-                  Text(
-                    "Sign in to continue!",
-                    style: TextStyle(fontSize: 20, color: Colors.grey.shade400),
-                  ),
-                ],
+        backgroundColor: Colors.blue[100],
+        body: Container(
+            child: Center(
+          key: formkey,
+          child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
               ),
-              Column(
+              margin: EdgeInsets.only(top: 5),
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  TextFormField(
-                    // onSaved: (String value),
-                    onSaved: (value) => _email = value.trim(),
-
-                    decoration: InputDecoration(
-                      labelText: "Email ID",
-                      labelStyle:
-                          TextStyle(fontSize: 14, color: Colors.grey.shade400),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade300,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                          )),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  TextFormField(
-                    onSaved: (value) => _password = value.trim(),
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: "Password",
-                      labelStyle:
-                          TextStyle(fontSize: 14, color: Colors.grey.shade400),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade300,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                          )),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      "Forgot Password ?",
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
                   Container(
-                    height: 50,
-                    width: double.infinity,
-                    child: FlatButton(
-                      onPressed: () {
-                        if (formkey.currentState.validate()) {
-                          formkey.currentState.save();
-                          // print('email = $_email, Password = $_password');
-                        }
-                        SignIn();
-                      },
-                      padding: EdgeInsets.all(0),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                              Color(0xffff5f6d),
-                              Color(0xffff5f6d),
-                              Color(0xffffc371),
-                            ],
-                          ),
-                        ),
-                        child: Container(
-                          alignment: Alignment.center,
-                          constraints: BoxConstraints(
-                              maxWidth: double.infinity, minHeight: 50),
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
+                    child: new Image.asset(
+                      'assets/building.png',
+                      height: 140.0,
+                      width: 140.0,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Container(
-                    height: 50,
-                    width: double.infinity,
-                    child: FlatButton(
-                      onPressed: () {},
-                      color: Colors.indigo.shade50,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Image.asset(
-                            "images/facebook.png",
-                            height: 18,
-                            width: 18,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Connect with Facebook",
-                            style: TextStyle(
-                                color: Colors.indigo,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
+                  buildTextFieldEmail(),
+                  buildTextFieldPassword(),
+                  buildButtonSignIn(),
                 ],
-              ),
-              Padding(
-                padding: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "I'm a new user.",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return SignupPage();
-                        }));
-                      },
-                      child: Text(
-                        "Sign up",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.red),
-                      ),
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+              )),
+        )));
   }
 
-  void SignIn() async {
-    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  Container buildTextFieldEmail() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        constraints: BoxConstraints.expand(height: 50, width: 300),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 3.0),
+            color: Colors.yellow[50],
+            borderRadius: BorderRadius.circular(16)),
+        child: TextFormField(
+            onChanged: (value) => _username = value.trim(),
+            decoration: InputDecoration.collapsed(hintText: "Username"),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter username';
+              }
+              return null;
+            },
+            textAlign: TextAlign.center,
+            autofocus: true,
+            style: TextStyle(fontSize: 18)));
+  }
 
-    await firebaseAuth
-        .signInWithEmailAndPassword(email: _email, password: _password)
-        .then((response) {
-      print('Login Success to $_email and $_password');
+  Container buildTextFieldPassword() {
+    return Container(
+        constraints: BoxConstraints.expand(height: 50, width: 300),
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 3.0),
+            color: Colors.yellow[50],
+            borderRadius: BorderRadius.circular(16)),
+        child: TextFormField(
+            onChanged: (value) => _password = value.trim(),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter password';
+              }
+              return null;
+            },
+            obscureText: true,
+            decoration: InputDecoration.collapsed(hintText: "Password"),
+            textAlign: TextAlign.center,
+            autofocus: true,
+            style: TextStyle(fontSize: 18)));
+  }
 
-      MaterialPageRoute materialPageRoute =
-          MaterialPageRoute(builder: (BuildContext context) => MyHomePage());
-      Navigator.of(context).pushAndRemoveUntil(
-          materialPageRoute, (Route<dynamic> route) => false);
-    }).catchError((response) {
-      print("Login Fils");
+  Container buildButtonSignIn() {
+    return Container(
+        constraints: BoxConstraints.expand(height: 50, width: 100),
+        child: FlatButton(
+            onPressed: () {
+              // print('email = $_username, Password = $_password');
+
+              signIn();
+            },
+            child: Text("Sign in",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, color: Colors.white))),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16), color: Colors.green[200]),
+        margin: EdgeInsets.only(top: 10),
+        padding: EdgeInsets.all(12));
+  }
+
+  void signIn() {
+    // var username = _username;
+    // var pass = _password;
+
+    var rootAdmin = db.child("Member");
+
+    rootAdmin.child(_username).once().then((DataSnapshot snapshot) {
+      // print('Data : ${snapshot.value}');
+      if ('${snapshot.value}' == 'null') {
+        normalDialog(context, "ไม่พบผู้ใช้งาน โปรดทำรายการใหม่");
+      } else {
+        db
+            .child('Member')
+            .child(_username)
+            .once()
+            .then((DataSnapshot snapshot) {
+          // print('Data : ${snapshot.value['Password']}');
+          try {
+            if (_password == '${snapshot.value['Password']}') {
+              MaterialPageRoute materialPageRoute = MaterialPageRoute(
+                  builder: (BuildContext context) => MyHomePage());
+              Navigator.of(context).pushAndRemoveUntil(
+                  materialPageRoute, (Route<dynamic> route) => false);
+            } else {
+              normalDialog(context, "รหัสผ่านไม่ถูกต้องครับ โปรดทำรายการใหม่");
+            }
+          } catch (e) {
+            normalDialog(context, "ไม่พบผู้ใช้งาน โปรดทำรายการใหม่");
+          }
+        });
+      }
     });
   }
 }
