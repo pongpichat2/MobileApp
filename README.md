@@ -1,5 +1,10 @@
 # Final Project Mobile App
-# Phaplen Hotel  
+# คู่มือการใช้งาน
+
+https://youtu.be/kwTLBjTJepk
+# Phaplen Hotel 
+
+
 
 
 # หน้าแรกจะเป็นหน้า เข้าสู่ระบบผู้ใช้ต้องทำการกรอก Username และ รหัสผ่านให้ถูกต้อง
